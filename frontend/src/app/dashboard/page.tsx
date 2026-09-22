@@ -1,9 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
 export default function DashboardPage() {
+  const [timeframe, setTimeframe] = useState<"today" | "24h" | "7d" | "30d">("today");
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // Dynamic telemetry based on timeframe
+  const kpiData = {
+    today: { calls: "12", fraud: "24", escalations: "7", violations: "0", label: "Today (Live Feed)" },
+    "24h": { calls: "89", fraud: "41", escalations: "14", violations: "0", label: "Last 24 Hours" },
+    "7d": { calls: "612", fraud: "182", escalations: "52", violations: "0", label: "Past 7 Days" },
+    "30d": { calls: "2,419", fraud: "648", escalations: "189", violations: "0", label: "Past 30 Days (Audit)" },
+  }[timeframe];
+
   return (
     <div className="space-y-6 max-w-7xl pb-space-lg text-on-surface">
       
@@ -26,9 +37,52 @@ export default function DashboardPage() {
             <span className="material-symbols-outlined text-sm">architecture</span>
             <span>Box L Architecture & Canvas</span>
           </Link>
-          <div className="flex items-center gap-1 text-xs font-mono text-outline bg-surface-container-low px-3 py-1.5 rounded-lg border border-surface-variant/30">
-            <span>Filter:</span>
-            <span className="text-white font-semibold">Today (Live) ▼</span>
+          
+          <div className="relative">
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className="flex items-center gap-1.5 text-xs font-mono text-outline bg-surface-container-low px-3 py-1.5 rounded-lg border border-surface-variant/30 hover:border-primary/40 transition-colors"
+            >
+              <span>Filter:</span>
+              <span className="text-white font-semibold">{kpiData.label}</span>
+              <span className="material-symbols-outlined text-xs text-primary">arrow_drop_down</span>
+            </button>
+
+            {filterOpen && (
+              <>
+                <div
+                  onClick={() => setFilterOpen(false)}
+                  className="fixed inset-0 z-30"
+                />
+                <div className="absolute right-0 mt-1 w-52 bg-surface-container-high border border-surface-variant/40 rounded-xl shadow-2xl py-1 z-40 font-mono text-xs">
+                  <div className="px-3 py-1 text-[10px] text-outline uppercase font-bold border-b border-surface-variant/20">
+                    Select Interval
+                  </div>
+                  {[
+                    { key: "today", label: "Today (Live Feed)" },
+                    { key: "24h", label: "Last 24 Hours" },
+                    { key: "7d", label: "Past 7 Days" },
+                    { key: "30d", label: "Past 30 Days (Audit)" },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => {
+                        setTimeframe(item.key as any);
+                        setFilterOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 flex items-center justify-between hover:bg-surface-container-highest transition-colors ${
+                        timeframe === item.key ? "text-primary font-bold bg-primary/10" : "text-on-surface"
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {timeframe === item.key && (
+                        <span className="material-symbols-outlined text-sm text-primary">check</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -37,7 +91,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title="Active Calls"
-          value="12"
+          value={kpiData.calls}
           trend="+8.4%"
           subtext="128 channels provisioned"
           icon="graphic_eq"
@@ -45,7 +99,7 @@ export default function DashboardPage() {
         />
         <KpiCard
           title="Fraud Events"
-          value="24"
+          value={kpiData.fraud}
           trend="+12.2%"
           subtext="1 critical active"
           icon="emergency"
@@ -54,7 +108,7 @@ export default function DashboardPage() {
         />
         <KpiCard
           title="Human Escalations (H)"
-          value="7"
+          value={kpiData.escalations}
           trend="8.1% of total"
           subtext="Warm handoffs armed"
           icon="support_agent"
@@ -62,7 +116,7 @@ export default function DashboardPage() {
         />
         <KpiCard
           title="Policy Violations"
-          value="0"
+          value={kpiData.violations}
           trend="100% compliant"
           subtext="Deterministic rule enforcement"
           icon="shield"
