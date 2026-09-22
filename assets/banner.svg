@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="100%" height="320" style="background:#07111F; border-radius:16px; border:1px solid #243746;">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#19D3AE" />
+      <stop offset="100%" stop-color="#00A2FD" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#19D3AE" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#07111F" stop-opacity="0" />
+    </radialGradient>
+    <style>
+      .glow-pulse { animation: pulse 3s infinite alternate; }
+      .bar-bounce { animation: bounce 1.2s infinite ease-in-out alternate; }
+      @keyframes pulse {
+        0% { opacity: 0.3; transform: scale(0.95); }
+        100% { opacity: 0.8; transform: scale(1.05); }
+      }
+      @keyframes bounce {
+        0% { transform: scaleY(0.4); }
+        100% { transform: scaleY(1.3); }
+      }
+    </style>
+  </defs>
+
+  <!-- Ambient background glow -->
+  <circle cx="600" cy="160" r="260" fill="url(#glow)" class="glow-pulse" />
+
+  <!-- Shield Icon -->
+  <g transform="translate(560, 40)">
+    <path d="M40 5 L10 18 V42 C10 65 24 82 40 88 C56 82 70 65 70 42 V18 L40 5 Z" fill="#0D1B2A" stroke="url(#primaryGrad)" stroke-width="2.5" />
+    <circle cx="40" cy="46" r="3.5" fill="#5BFBD4" />
+  </g>
+
+  <!-- Main Headline -->
+  <text x="600" y="170" text-anchor="middle" font-family="Inter, -apple-system, sans-serif" font-weight="800" font-size="38" fill="#FFFFFF" letter-spacing="-0.02em">
+    FINVOICE <tspan fill="#19D3AE">GUARD</tspan>
+  </text>
+  
+  <text x="600" y="202" text-anchor="middle" font-family="Inter, -apple-system, sans-serif" font-weight="500" font-size="16" fill="#91A4B7" letter-spacing="0.04em">
+    Governed Voice AI for Financial Workflows • CBUAE Sovereign Telephony
+  </text>
+
+  <!-- Animated Waveform Bars Center-Bottom -->
+  <g transform="translate(380, 245)">
+    <!-- 40 Waveform Bars -->
+    <rect x="0" y="0" width="4" height="24" rx="2" fill="#19D3AE" opacity="0.6" />
+    <rect x="11" y="-6" width="4" height="36" rx="2" fill="#19D3AE" opacity="0.8" />
+    <rect x="22" y="-12" width="4" height="48" rx="2" fill="#5BFBD4" />
+    <rect x="33" y="-8" width="4" height="40" rx="2" fill="#19D3AE" />
+    <rect x="44" y="-3" width="4" height="30" rx="2" fill="#00A2FD" />
+    <rect x="55" y="-14" width="4" height="52" rx="2" fill="#5BFBD4" />
+    <rect x="66" y="-6" width="4" height="36" rx="2" fill="#19D3AE" />
+    <rect x="77" y="-2" width="4" height="28" rx="2" fill="#98CBFF" />
+    <rect x="88" y="-10" width="4" height="44" rx="2" fill="#19D3AE" />
+    <rect x="99" y="-18" width="4" height="60" rx="2" fill="#5BFBD4" />
+    <rect x="110" y="-8" width="4" height="40" rx="2" fill="#19D3AE" />
+    <rect x="121" y="-4" width="4" height="32" rx="2" fill="#00A2FD" />
+    <rect x="132" y="-12" width="4" height="48" rx="2" fill="#19D3AE" />
+    <rect x="143" y="-16" width="4" height="56" rx="2" fill="#5BFBD4" />
+    <rect x="154" y="-6" width="4" height="36" rx="2" fill="#19D3AE" />
+    <rect x="165" y="-2" width="4" height="28" rx="2" fill="#98CBFF" />
+    <rect x="176" y="-14" width="4" height="52" rx="2" fill="#19D3AE" />
+    <rect x="187" y="-20" width="4" height="64" rx="2" fill="#5BFBD4" />
+    <rect x="198" y="-10" width="4" height="44" rx="2" fill="#19D3AE" />
+    <rect x="209" y="-4" width="4" height="32" rx="2" fill="#00A2FD" />
+    <rect x="220" y="-12" width="4" height="48" rx="2" fill="#19D3AE" />
+    <rect x="231" y="-18" width="4" height="60" rx="2" fill="#5BFBD4" />
+    <rect x="242" y="-8" width="4" height="40" rx="2" fill="#19D3AE" />
+    <rect x="253" y="-4" width="4" height="32" rx="2" fill="#00A2FD" />
+    <rect x="264" y="-14" width="4" height="52" rx="2" fill="#5BFBD4" />
+    <rect x="275" y="-6" width="4" height="36" rx="2" fill="#19D3AE" />
+    <rect x="286" y="-2" width="4" height="28" rx="2" fill="#98CBFF" />
+    <rect x="297" y="-10" width="4" height="44" rx="2" fill="#19D3AE" />
+    <rect x="308" y="-16" width="4" height="56" rx="2" fill="#5BFBD4" />
+    <rect x="319" y="-6" width="4" height="36" rx="2" fill="#19D3AE" />
+    <rect x="330" y="-2" width="4" height="28" rx="2" fill="#98CBFF" />
+    <rect x="341" y="-12" width="4" height="48" rx="2" fill="#19D3AE" />
+    <rect x="352" y="-18" width="4" height="60" rx="2" fill="#5BFBD4" />
+    <rect x="363" y="-8" width="4" height="40" rx="2" fill="#19D3AE" />
+    <rect x="374" y="-4" width="4" height="32" rx="2" fill="#00A2FD" />
+    <rect x="385" y="-10" width="4" height="44" rx="2" fill="#19D3AE" />
+    <rect x="396" y="-14" width="4" height="52" rx="2" fill="#5BFBD4" />
+    <rect x="407" y="-6" width="4" height="36" rx="2" fill="#19D3AE" />
+    <rect x="418" y="-2" width="4" height="28" rx="2" fill="#98CBFF" />
+    <rect x="429" y="0" width="4" height="24" rx="2" fill="#19D3AE" opacity="0.6" />
+  </g>
+
+  <!-- Bottom Tech Badges -->
+  <text x="600" y="300" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="#85948E" letter-spacing="0.1em">
+    ELEVENLABS AGENTS PLATFORM • DETERMINISTIC POLICY GUARD • ZERO CREDENTIAL COLLECTION
+  </text>
+</svg>
