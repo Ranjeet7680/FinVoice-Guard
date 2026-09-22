@@ -298,17 +298,27 @@ python -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
+cp .env.example .env
+# Edit .env and set:
+# ELEVENLABS_API_KEY=your_key_here
+# ELEVENLABS_MODEL_ID=eleven_multilingual_v2
+
 uvicorn main:app --reload --port 8000
 ```
-*Backend API docs available at: `http://localhost:8000/docs`*
+*Backend API docs available at: `http://localhost:8000/docs` (includes ElevenLabs `/api/voice/synthesize`)*
 
 ### 4. Frontend Setup
 ```bash
 cd ../frontend
 npm install
+cp .env.example .env.local
+# Edit .env.local and set:
+# ELEVENLABS_API_KEY=your_key_here
+# NEXT_PUBLIC_ELEVENLABS_MODEL=eleven_multilingual_v2
+
 npm run dev
 ```
-*Open `http://localhost:3000` to launch the platform.*
+*Open `http://localhost:3000` to launch the platform with active ElevenLabs Voice Sandbox & Live Call audio playback.*
 
 ---
 

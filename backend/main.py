@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import fraud
+from app.api import fraud, voice
 
 app = FastAPI(title="FinVoice Guard API")
 
@@ -14,6 +14,7 @@ app.add_middleware(
 )
 
 app.include_router(fraud.router)
+app.include_router(voice.router)
 
 @app.get("/")
 def read_root():

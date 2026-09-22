@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -13,6 +13,11 @@ export default function TacticalCallConsole() {
   const [isMuted, setIsMuted] = useState(false);
   const [handoffState, setHandoffState] = useState<"idle" | "connecting" | "completed">("idle");
   const [audioActive, setAudioActive] = useState(true);
+
+  // ElevenLabs Voice Playback states
+  const [playingTurn, setPlayingTurn] = useState<number | null>(null);
+  const [loadingTurn, setLoadingTurn] = useState<number | null>(null);
+  const audioTurnRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -32,6 +37,63 @@ export default function TacticalCallConsole() {
     setTimeout(() => {
       setHandoffState("completed");
     }, 1500);
+  };
+
+  const playTurn = async (turnIdx: number, text: string, voiceId: string = "JBFqnCBsd6RMkjVDRZzb") => {
+    if (playingTurn === turnIdx) {
+      if (audioTurnRef.current) {
+        audioTurnRef.current.pause();
+      }
+      setPlayingTurn(null);
+      return;
+    }
+
+    setLoadingTurn(turnIdx);
+    try {
+      const res = await fetch("/api/elevenlabs/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          voice_id: voiceId,
+          model_id: "eleven_multilingual_v2",
+        }),
+      });
+
+      if (!res.ok) {
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.onstart = () => setPlayingTurn(turnIdx);
+          u.onend = () => setPlayingTurn(null);
+          window.speechSynthesis.speak(u);
+        }
+        return;
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      if (audioTurnRef.current) {
+        audioTurnRef.current.pause();
+      }
+      const audio = new Audio(url);
+      audioTurnRef.current = audio;
+      audio.onplay = () => setPlayingTurn(turnIdx);
+      audio.onended = () => setPlayingTurn(null);
+      audio.onerror = () => setPlayingTurn(null);
+      await audio.play();
+    } catch (e) {
+      console.error(e);
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.onstart = () => setPlayingTurn(turnIdx);
+        u.onend = () => setPlayingTurn(null);
+        window.speechSynthesis.speak(u);
+      }
+    } finally {
+      setLoadingTurn(null);
+    }
   };
 
   return (
@@ -335,7 +397,18 @@ export default function TacticalCallConsole() {
                     <span className="material-symbols-outlined text-sm">smart_toy</span>
                     <span>FinVoice Guard (Automated Agent)</span>
                   </span>
-                  <span className="text-outline">04:02</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playTurn(1, "السلام علیکم جناب احمد خان صاحب، میں آپ کے بینک کا خودکار حفاظتی وائس اسسٹنٹ ہوں۔ ہم نے آپ کے کارڈ پر ایک مشکوک ٹرانزیکشن کا اشارہ دیکھا ہے۔", "JBFqnCBsd6RMkjVDRZzb")}
+                      className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                    >
+                      <span className={`material-symbols-outlined text-xs ${playingTurn === 1 ? "animate-pulse text-primary" : ""}`}>
+                        {loadingTurn === 1 ? "progress_activity" : playingTurn === 1 ? "volume_up" : "play_arrow"}
+                      </span>
+                      <span>{loadingTurn === 1 ? "Synthesizing..." : playingTurn === 1 ? "Playing" : "Speak (ElevenLabs)"}</span>
+                    </button>
+                    <span className="text-outline">04:02</span>
+                  </div>
                 </div>
                 <p className="text-on-surface font-body-lg text-body-lg text-right font-medium leading-relaxed" dir="rtl" lang="ur">
                   "السلام علیکم جناب احمد خان صاحب، میں آپ کے بینک کا خودکار حفاظتی وائس اسسٹنٹ ہوں۔ ہم نے آپ کے کارڈ پر ایک مشکوک ٹرانزیکشن کا اشارہ دیکھا ہے۔"
@@ -352,7 +425,18 @@ export default function TacticalCallConsole() {
                     <span className="material-symbols-outlined text-sm">person</span>
                     <span>Ahmed Khan (Customer)</span>
                   </span>
-                  <span className="text-outline">04:14</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playTurn(2, "جی ہاں! مجھے ابھی ابھی ایک میسج آیا کہ لندن میں نو سو بیس پاؤنڈ خرچ ہوئے ہیں۔ میں تو دبئی میں ہوں! یہ میں نے نہیں کیا!", "21m00Tcm4TlvDq8ikWAM")}
+                      className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20 transition-colors"
+                    >
+                      <span className={`material-symbols-outlined text-xs ${playingTurn === 2 ? "animate-pulse text-secondary" : ""}`}>
+                        {loadingTurn === 2 ? "progress_activity" : playingTurn === 2 ? "volume_up" : "play_arrow"}
+                      </span>
+                      <span>{loadingTurn === 2 ? "Synthesizing..." : playingTurn === 2 ? "Playing" : "Play Turn"}</span>
+                    </button>
+                    <span className="text-outline">04:14</span>
+                  </div>
                 </div>
                 <p className="text-on-surface font-body-lg text-body-lg text-right font-medium leading-relaxed" dir="rtl" lang="ur">
                   "جی ہاں! مجھے ابھی ابھی ایک میسج آیا کہ لندن میں £920 خرچ ہوئے ہیں۔ میں تو دبئی میں ہوں! یہ میں نے نہیں کیا!"
@@ -373,7 +457,18 @@ export default function TacticalCallConsole() {
                     <span className="material-symbols-outlined text-sm">smart_toy</span>
                     <span>FinVoice Guard (Automated Agent)</span>
                   </span>
-                  <span className="text-outline">04:22</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playTurn(3, "سمجھ گیا۔ ہم نے آپ کے بینکنگ ایپ پر تصدیقی پرامپٹ بھیجا ہے۔ براہ کرم تصدیق کریں کہ کیا آپ نے اسے دیکھا ہے؟", "JBFqnCBsd6RMkjVDRZzb")}
+                      className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                    >
+                      <span className={`material-symbols-outlined text-xs ${playingTurn === 3 ? "animate-pulse text-primary" : ""}`}>
+                        {loadingTurn === 3 ? "progress_activity" : playingTurn === 3 ? "volume_up" : "play_arrow"}
+                      </span>
+                      <span>{loadingTurn === 3 ? "Synthesizing..." : playingTurn === 3 ? "Playing" : "Speak (ElevenLabs)"}</span>
+                    </button>
+                    <span className="text-outline">04:22</span>
+                  </div>
                 </div>
                 <p className="text-on-surface font-body-lg text-body-lg text-right font-medium leading-relaxed" dir="rtl" lang="ur">
                   "سمجھ گیا۔ ہم نے آپ کے بینکنگ ایپ پر تصدیقی پرامپٹ بھیجا ہے۔ براہ کرم تصدیق کریں کہ کیا آپ نے اسے دیکھا ہے؟"
@@ -390,7 +485,18 @@ export default function TacticalCallConsole() {
                     <span className="material-symbols-outlined text-sm">person</span>
                     <span>Ahmed Khan (Customer)</span>
                   </span>
-                  <span className="text-outline">04:28</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playTurn(4, "ہاں، میں نے ایپ پر ناٹ می دبا دیا ہے۔", "21m00Tcm4TlvDq8ikWAM")}
+                      className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 hover:bg-secondary/20 transition-colors"
+                    >
+                      <span className={`material-symbols-outlined text-xs ${playingTurn === 4 ? "animate-pulse text-secondary" : ""}`}>
+                        {loadingTurn === 4 ? "progress_activity" : playingTurn === 4 ? "volume_up" : "play_arrow"}
+                      </span>
+                      <span>{loadingTurn === 4 ? "Synthesizing..." : playingTurn === 4 ? "Playing" : "Play Turn"}</span>
+                    </button>
+                    <span className="text-outline">04:28</span>
+                  </div>
                 </div>
                 <p className="text-on-surface font-body-lg text-body-lg text-right font-medium leading-relaxed" dir="rtl" lang="ur">
                   "ہاں، میں نے ایپ پر 'Not Me' دبا دیا ہے۔"
@@ -410,7 +516,18 @@ export default function TacticalCallConsole() {
                     <span className="material-symbols-outlined text-sm">smart_toy</span>
                     <span>FinVoice Guard (Automated Agent)</span>
                   </span>
-                  <span className="text-outline">04:31</span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => playTurn(5, "شکریہ۔ پالیسی کے تحت ہم نے آپ کا کارڈ فوری طور پر عارضی فریز کر دیا ہے۔ مستقل بلاک یا نیا کارڈ جاری کرنے کے لیے میں آپ کو ہمارے سینئر فراڈ اسپیشلسٹ کے پاس منتقل کر رہا ہوں۔", "JBFqnCBsd6RMkjVDRZzb")}
+                      className="flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                    >
+                      <span className={`material-symbols-outlined text-xs ${playingTurn === 5 ? "animate-pulse text-primary" : ""}`}>
+                        {loadingTurn === 5 ? "progress_activity" : playingTurn === 5 ? "volume_up" : "play_arrow"}
+                      </span>
+                      <span>{loadingTurn === 5 ? "Synthesizing..." : playingTurn === 5 ? "Playing" : "Speak (ElevenLabs)"}</span>
+                    </button>
+                    <span className="text-outline">04:31</span>
+                  </div>
                 </div>
                 <p className="text-on-surface font-body-lg text-body-lg text-right font-medium leading-relaxed" dir="rtl" lang="ur">
                   "شکریہ۔ پالیسی کے تحت ہم نے آپ کا کارڈ فوری طور پر عارضی فریز (Temporary Freeze) کر دیا ہے۔ مستقل بلاک یا نیا کارڈ جاری کرنے کے لیے میں آپ کو ہمارے سینئر فراڈ اسپیشلسٹ کے پاس منتقل کر رہا ہوں۔"
@@ -422,6 +539,7 @@ export default function TacticalCallConsole() {
                   <span className="px-space-xs py-0.5 rounded bg-surface-container-lowest text-tertiary font-code-sm text-code-sm font-semibold">Handoff Bridge Armed</span>
                 </div>
               </div>
+
 
             </div>
           </div>
