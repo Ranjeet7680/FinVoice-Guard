@@ -63,6 +63,7 @@ const SEARCH_ITEMS: SearchCategory[] = [
   {
     category: "Live Operations & Calls",
     items: [
+      { id: "fraud-center", title: "Fraud Operations & Simulator", subtitle: "Live Incident Triage & Interactive Swindle Injection", href: "/dashboard/fraud", icon: "emergency", badge: "STAGE 2" },
       { id: "call-92831", title: "Call #92831 — Fraud Intervention", subtitle: "Ahmed Khan • Urdu (اردو) • 96% Critical Risk", href: "/dashboard/calls/92831", icon: "emergency", badge: "CRITICAL" },
       { id: "call-92830", title: "Call #92830 — Governed Collections", subtitle: "Rashid Al-Maktoum • Hindi (हिन्दी) • 09:00-20:00 Window", href: "/dashboard/collections", icon: "credit_score", badge: "LIVE" },
       { id: "call-92829", title: "Call #92829 — Everyday Servicing", subtitle: "Fatima Al-Zahra • Arabic (العربية) • Balance Query", href: "/dashboard/calls/92831", icon: "graphic_eq", badge: "LIVE" },
@@ -72,6 +73,7 @@ const SEARCH_ITEMS: SearchCategory[] = [
   {
     category: "AI Governance & Architecture",
     items: [
+      { id: "dev-center", title: "AI / ML Developer Center & Red-Team", subtitle: "4-Tier Models, Adversarial Prompt Lab & Trace Waterfall", href: "/dashboard/developer", icon: "terminal", badge: "NEW" },
       { id: "arch-boxl", title: "Box L Architecture & Canvas", subtitle: "Stage 1 ElevenLabs 3-Zone Topology & Evidence Audit", href: "/dashboard/architecture", icon: "architecture", badge: "CORE" },
       { id: "policy-fraud", title: "Policy Engine & Guardrails", subtitle: "Rule FRAUD-V3.2, COLL-04, OPT-OUT-01 Deterministic Rules", href: "/dashboard/policies", icon: "gavel", badge: "POLICY" },
       { id: "merkle-audit", title: "Audit Center & Merkle Forensics", subtitle: "SHA-256 Cryptographic Verification & CBUAE Export Packages", href: "/dashboard/audit", icon: "history_edu", badge: "GOVERNANCE" },

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import LiveFraudDemoRunner from "@/components/demo/LiveFraudDemoRunner";
 
 export default function DashboardPage() {
   const [timeframe, setTimeframe] = useState<"today" | "24h" | "7d" | "30d">("today");
@@ -9,10 +10,50 @@ export default function DashboardPage() {
 
   // Dynamic telemetry based on timeframe
   const kpiData = {
-    today: { calls: "12", fraud: "24", escalations: "7", violations: "0", label: "Today (Live Feed)" },
-    "24h": { calls: "89", fraud: "41", escalations: "14", violations: "0", label: "Last 24 Hours" },
-    "7d": { calls: "612", fraud: "182", escalations: "52", violations: "0", label: "Past 7 Days" },
-    "30d": { calls: "2,419", fraud: "648", escalations: "189", violations: "0", label: "Past 30 Days (Audit)" },
+    today: {
+      calls: "12",
+      fraud: "24",
+      criticalRisks: "1 active",
+      escalations: "7",
+      completedCalls: "116",
+      policyBlocks: "14 blocked",
+      avgResponseTime: "185ms",
+      verificationRate: "97.4%",
+      label: "Today (Live Feed)",
+    },
+    "24h": {
+      calls: "89",
+      fraud: "41",
+      criticalRisks: "4 active",
+      escalations: "14",
+      completedCalls: "842",
+      policyBlocks: "52 blocked",
+      avgResponseTime: "192ms",
+      verificationRate: "96.8%",
+      label: "Last 24 Hours",
+    },
+    "7d": {
+      calls: "612",
+      fraud: "182",
+      criticalRisks: "11 active",
+      escalations: "52",
+      completedCalls: "5,820",
+      policyBlocks: "218 blocked",
+      avgResponseTime: "189ms",
+      verificationRate: "97.1%",
+      label: "Past 7 Days",
+    },
+    "30d": {
+      calls: "2,419",
+      fraud: "648",
+      criticalRisks: "29 active",
+      escalations: "189",
+      completedCalls: "23,190",
+      policyBlocks: "914 blocked",
+      avgResponseTime: "187ms",
+      verificationRate: "97.3%",
+      label: "Past 30 Days (Audit)",
+    },
   }[timeframe];
 
   return (
@@ -25,17 +66,25 @@ export default function DashboardPage() {
             Good evening, Ranjeet
           </h1>
           <p className="text-sm text-on-surface-variant mt-0.5">
-            Here&apos;s real-time governed telemetry across your financial voice operations.
+            Real-time governed telemetry across your financial voice operations & fraud interventions.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Link
-            href="/dashboard/architecture"
+            href="/dashboard/fraud"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-error bg-error/10 border border-error/30 hover:bg-error/20 transition-colors font-bold"
+          >
+            <span className="material-symbols-outlined text-sm">emergency</span>
+            <span>Fraud Operations</span>
+          </Link>
+
+          <Link
+            href="/dashboard/developer"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-primary bg-primary/10 border border-primary/30 hover:bg-primary/20 transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">architecture</span>
-            <span>Box L Architecture & Canvas</span>
+            <span className="material-symbols-outlined text-sm">terminal</span>
+            <span>AI Control Center</span>
           </Link>
           
           <div className="relative">
@@ -87,42 +136,84 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard
-          title="Active Calls"
-          value={kpiData.calls}
-          trend="+8.4%"
-          subtext="128 channels provisioned"
-          icon="graphic_eq"
-          color="text-primary"
-        />
-        <KpiCard
-          title="Fraud Events"
-          value={kpiData.fraud}
-          trend="+12.2%"
-          subtext="1 critical active"
-          icon="emergency"
-          color="text-error"
-          isDanger
-        />
-        <KpiCard
-          title="Human Escalations (H)"
-          value={kpiData.escalations}
-          trend="8.1% of total"
-          subtext="Warm handoffs armed"
-          icon="support_agent"
-          color="text-tertiary"
-        />
-        <KpiCard
-          title="Policy Violations"
-          value={kpiData.violations}
-          trend="100% compliant"
-          subtext="Deterministic rule enforcement"
-          icon="shield"
-          color="text-primary"
-          isSuccess
-        />
+      {/* Prominent One-Click E2E Demo Banner */}
+      <LiveFraudDemoRunner />
+
+      {/* 8 KPI Cards (Grid 1: Volume & Risk, Grid 2: Performance & Governance) */}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiCard
+            title="Active Calls"
+            value={kpiData.calls}
+            trend="+8.4%"
+            subtext="128 channels provisioned"
+            icon="graphic_eq"
+            color="text-primary"
+          />
+          <KpiCard
+            title="Fraud Alerts"
+            value={kpiData.fraud}
+            trend="+12.2%"
+            subtext="XGBoost scoring live"
+            icon="emergency"
+            color="text-error"
+            isDanger
+          />
+          <KpiCard
+            title="Critical Risks"
+            value={kpiData.criticalRisks}
+            trend="Immediate action"
+            subtext="Dual geo velocity vector"
+            icon="warning"
+            color="text-error"
+            isDanger
+          />
+          <KpiCard
+            title="Human Escalations (H)"
+            value={kpiData.escalations}
+            trend="8.1% of total"
+            subtext="Warm handoffs armed"
+            icon="support_agent"
+            color="text-tertiary"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiCard
+            title="Completed Calls"
+            value={kpiData.completedCalls}
+            trend="100% auditable"
+            subtext="SHA-256 Merkle root sealed"
+            icon="check_circle"
+            color="text-primary"
+            isSuccess
+          />
+          <KpiCard
+            title="Policy Blocks"
+            value={kpiData.policyBlocks}
+            trend="100% compliant"
+            subtext="Deterministic rule enforcement"
+            icon="shield"
+            color="text-primary"
+            isSuccess
+          />
+          <KpiCard
+            title="Average Response Time"
+            value={kpiData.avgResponseTime}
+            trend="Sub-200ms"
+            subtext="ElevenLabs v3 synthesis"
+            icon="speed"
+            color="text-primary"
+          />
+          <KpiCard
+            title="Verification Rate"
+            value={kpiData.verificationRate}
+            trend="Zero secrets"
+            subtext="Out-of-band biometric push"
+            icon="verified"
+            color="text-secondary"
+          />
+        </div>
       </div>
 
       {/* Main Grid: Left Live Ops / Compliance & Right Risk Monitor */}

@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import fraud, voice
+from app.api import fraud, voice, cards, policy
 
 app = FastAPI(title="FinVoice Guard API")
 
 # Configure CORS for Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -15,6 +15,8 @@ app.add_middleware(
 
 app.include_router(fraud.router)
 app.include_router(voice.router)
+app.include_router(cards.router)
+app.include_router(policy.router)
 
 @app.get("/")
 def read_root():

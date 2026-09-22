@@ -121,18 +121,18 @@ export default function Sidebar({
               )}
               <div className="space-y-1 mt-1">
                 <SidebarItem
-                  href="/dashboard/calls/92831"
+                  href="/dashboard/fraud"
                   icon="emergency"
-                  label="Fraud Operations"
-                  active={pathname === "/dashboard/calls/92831"}
-                  badge="96% RISK"
+                  label="Fraud Management"
+                  active={pathname === "/dashboard/fraud"}
+                  badge="ML SIM"
                   collapsed={isCollapsed}
                   onNav={() => setMobileOpen(false)}
                 />
                 <SidebarItem
                   href="/dashboard/calls/92831"
                   icon="graphic_eq"
-                  label="Live AI Calls"
+                  label="Tactical Call Console"
                   active={pathname?.startsWith("/dashboard/calls")}
                   badge="LIVE"
                   collapsed={isCollapsed}
@@ -189,6 +189,15 @@ export default function Sidebar({
                   label="Box L Architecture & Canvas"
                   active={pathname === "/dashboard/architecture"}
                   badge="STAGE 1"
+                  collapsed={isCollapsed}
+                  onNav={() => setMobileOpen(false)}
+                />
+                <SidebarItem
+                  href="/dashboard/developer"
+                  icon="terminal"
+                  label="AI / ML Control Center"
+                  active={pathname === "/dashboard/developer"}
+                  badge="STAGE 2"
                   collapsed={isCollapsed}
                   onNav={() => setMobileOpen(false)}
                 />
