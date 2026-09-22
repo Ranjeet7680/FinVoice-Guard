@@ -15,6 +15,7 @@ export default function TacticalCallConsole() {
   const [handoffState, setHandoffState] = useState<"idle" | "connecting" | "completed">("idle");
   const [audioActive, setAudioActive] = useState(true);
   const [showIntercom, setShowIntercom] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
   // ElevenLabs Voice Playback states
   const [playingTurn, setPlayingTurn] = useState<number | null>(null);
@@ -145,6 +146,15 @@ export default function TacticalCallConsole() {
 
         {/* Right Group: Tactical Action Suite */}
         <div className="flex items-center gap-space-xs flex-wrap w-full xl:w-auto justify-end">
+          <button 
+            onClick={() => setShowVideoModal(true)}
+            className="flex items-center gap-1.5 px-space-sm py-2 rounded bg-surface-container hover:bg-surface-container-highest text-primary font-headline-sm text-body-sm font-semibold transition-all shadow-sm border border-primary/40 cursor-pointer"
+            title="Watch Live LinkedIn Demo Video"
+          >
+            <span className="material-symbols-outlined text-base">play_circle</span>
+            <span>Demo Video</span>
+          </button>
+
           <button 
             onClick={() => setIsMuted(!isMuted)}
             className={`flex items-center gap-1.5 px-space-sm py-2 rounded font-body-sm text-body-sm transition-colors shadow-sm border border-surface-variant/30 ${
@@ -718,6 +728,52 @@ export default function TacticalCallConsole() {
         onClose={() => setShowIntercom(false)}
         incidentId={callId}
       />
+
+      {/* Demo Video Modal */}
+      {showVideoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-[560px] bg-surface-container-low border border-primary/50 rounded-2xl p-6 shadow-2xl flex flex-col items-center">
+            <div className="w-full flex items-center justify-between pb-3 mb-4 border-b border-surface-variant/30">
+              <div className="flex items-center gap-2 text-primary font-headline-sm font-bold text-sm">
+                <span className="w-2.5 h-2.5 rounded-full bg-error animate-ping" />
+                <span>Live System Demo Walkthrough</span>
+              </div>
+              <button
+                onClick={() => setShowVideoModal(false)}
+                className="w-8 h-8 rounded-full bg-surface-container hover:bg-surface-container-highest flex items-center justify-center text-outline hover:text-on-surface transition-colors cursor-pointer"
+                aria-label="Close modal"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            </div>
+
+            <div className="w-full flex justify-center overflow-hidden rounded-xl bg-black/60 p-2">
+              <iframe
+                src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7508174543690137602?compact=1"
+                height="399"
+                width="504"
+                frameBorder="0"
+                allowFullScreen
+                title="Embedded post"
+                className="w-full max-w-[504px] min-h-[399px] rounded-lg border border-surface-variant/40"
+              />
+            </div>
+
+            <div className="w-full flex items-center justify-between mt-4 pt-3 border-t border-surface-variant/30 text-xs font-code-sm">
+              <span className="text-outline">FinVoice Guard End-to-End Walkthrough</span>
+              <a
+                href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7508174543690137602"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline flex items-center gap-1"
+              >
+                <span>Open in LinkedIn</span>
+                <span className="material-symbols-outlined text-xs">open_in_new</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

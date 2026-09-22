@@ -50,6 +50,41 @@ export default function ArchitecturePage() {
       {/* TAB 1: BOX L ARCHITECTURE */}
       {activeTab === "architecture" && (
         <div className="space-y-6">
+          {/* Live End-to-End Demo Video Player */}
+          <div className="bg-surface-container-low rounded-xl p-6 border border-primary/40 shadow-[0_0_30px_rgba(25,211,174,0.15)] flex flex-col items-center">
+            <div className="w-full flex items-center justify-between pb-3 mb-4 border-b border-surface-variant/30 font-code-sm text-code-sm">
+              <div className="flex items-center gap-2 text-primary font-bold">
+                <span className="w-2.5 h-2.5 rounded-full bg-error animate-ping" />
+                <span>LIVE SYSTEM WALKTHROUGH DEMONSTRATION</span>
+              </div>
+              <a
+                href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7508174543690137602"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-on-surface-variant hover:text-primary flex items-center gap-1 transition-colors text-xs"
+              >
+                <span>View on LinkedIn</span>
+                <span className="material-symbols-outlined text-xs">open_in_new</span>
+              </a>
+            </div>
+
+            <div className="w-full flex justify-center overflow-hidden rounded-xl bg-black/50 p-2">
+              <iframe
+                src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7508174543690137602?compact=1"
+                height="399"
+                width="504"
+                frameBorder="0"
+                allowFullScreen
+                title="Embedded post"
+                className="w-full max-w-[504px] min-h-[399px] rounded-lg border border-surface-variant/40"
+              />
+            </div>
+            
+            <p className="mt-3 font-code-sm text-xs text-outline text-center">
+              Recorded end-to-end execution of fraud anomaly ingress, ElevenLabs Multilingual v2 call, zero-secrets verification, and simulated banking core freeze.
+            </p>
+          </div>
+
           {/* Main 3-Zone Architecture Container */}
           <div className="bg-surface-container-low rounded-xl p-6 border border-surface-variant/30 shadow-lg">
             <div className="flex items-center justify-between pb-4 border-b border-surface-variant/20 mb-6">
