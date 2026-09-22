@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import FinVoiceLogo from "@/components/brand/FinVoiceLogo";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -37,15 +38,9 @@ export default function OnboardingPage() {
         {/* Top Global Header / Stage Controller */}
         <header className="w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md bg-surface-container-low p-space-md rounded-xl shadow-xl mb-space-lg border border-surface-variant/30">
           <div className="flex items-center gap-space-md">
-            <div className="h-10 w-auto flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-bold">
-                <span className="material-symbols-outlined text-xl">shield</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-headline-sm text-headline-sm tracking-tight text-on-surface">FinVoice Guard</span>
-                <span className="font-code-sm text-code-sm text-primary uppercase tracking-widest">ENTERPRISE AI</span>
-              </div>
-            </div>
+            <Link href="/" className="h-10 w-auto flex items-center">
+              <FinVoiceLogo variant="horizontal" size="sm" animated={true} />
+            </Link>
             <div className="h-6 w-px bg-surface-variant hidden sm:block"></div>
             <div className="flex items-center gap-space-xs bg-surface-container px-space-sm py-1 rounded">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>

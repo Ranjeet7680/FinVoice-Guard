@@ -1,0 +1,27 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGrad" x1="15" y1="8" x2="85" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#19D3AE" />
+      <stop offset="50%" stopColor="#00A2FD" />
+      <stop offset="100%" stopColor="#07111F" />
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="50" y1="20" x2="50" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#5BFBD4" />
+      <stop offset="100%" stopColor="#19D3AE" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="20" fill="#07111F"/>
+  <path
+    d="M50 14L24 25.5V47C24 66.5 35.5 83.5 50 89.5C64.5 83.5 76 66.5 76 47V25.5L50 14Z"
+    fill="#0D1B2A"
+    stroke="url(#shieldGrad)"
+    strokeWidth="3.5"
+    strokeLinejoin="round"
+  />
+  <rect x="34" y="44" width="4" height="14" rx="2" fill="#19D3AE" />
+  <rect x="42" y="36" width="4" height="30" rx="2" fill="url(#waveGrad)" />
+  <rect x="48" y="28" width="4" height="46" rx="2" fill="#5BFBD4" />
+  <rect x="54" y="36" width="4" height="30" rx="2" fill="url(#waveGrad)" />
+  <rect x="62" y="44" width="4" height="14" rx="2" fill="#19D3AE" />
+  <circle cx="50" cy="51" r="3" fill="#FFFFFF"/>
+</svg>

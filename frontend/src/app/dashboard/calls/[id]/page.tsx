@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import LiveVoiceIntercomModal from "@/components/voice/LiveVoiceIntercomModal";
 
 export default function TacticalCallConsole() {
   const params = useParams();
@@ -13,6 +14,7 @@ export default function TacticalCallConsole() {
   const [isMuted, setIsMuted] = useState(false);
   const [handoffState, setHandoffState] = useState<"idle" | "connecting" | "completed">("idle");
   const [audioActive, setAudioActive] = useState(true);
+  const [showIntercom, setShowIntercom] = useState(false);
 
   // ElevenLabs Voice Playback states
   const [playingTurn, setPlayingTurn] = useState<number | null>(null);
@@ -161,6 +163,14 @@ export default function TacticalCallConsole() {
           >
             <span className="material-symbols-outlined text-base text-secondary">record_voice_over</span>
             <span>Whisper to Human</span>
+          </button>
+          
+          <button 
+            onClick={() => setShowIntercom(true)}
+            className="flex items-center gap-1.5 px-space-sm py-2 rounded bg-primary/20 hover:bg-primary/30 text-primary border border-primary/40 font-headline-sm text-body-sm font-semibold transition-all shadow-sm cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-base animate-pulse">mic</span>
+            <span>Live Voice Intercom</span>
           </button>
           
           <button 
@@ -703,6 +713,11 @@ export default function TacticalCallConsole() {
         </div>
       </div>
 
+      <LiveVoiceIntercomModal
+        isOpen={showIntercom}
+        onClose={() => setShowIntercom(false)}
+        incidentId={callId}
+      />
     </div>
   );
 }

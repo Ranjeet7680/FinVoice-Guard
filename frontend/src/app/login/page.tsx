@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import FinVoiceLogo from "@/components/brand/FinVoiceLogo";
 
 type UserRole = "ADMIN" | "FRAUD_MANAGER" | "FRAUD_ANALYST" | "COMPLIANCE" | "CALL_AGENT" | "VIEWER";
 
@@ -158,13 +159,7 @@ export default function LoginPage() {
       {/* Header */}
       <header className="flex items-center justify-between max-w-7xl w-full mx-auto pb-6">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-bold shadow-lg">
-            <span className="material-symbols-outlined text-2xl">shield</span>
-          </div>
-          <div>
-            <span className="text-xl font-bold tracking-tight text-white block">FinVoice Guard</span>
-            <span className="text-[10px] font-mono text-primary uppercase tracking-widest block">ZERO-TRUST INSTITUTIONAL AUTH</span>
-          </div>
+          <FinVoiceLogo variant="horizontal" size="sm" animated={true} />
         </Link>
         <div className="flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full border border-primary/20 text-primary font-mono text-xs">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />

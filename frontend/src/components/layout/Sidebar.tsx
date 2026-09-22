@@ -4,6 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import FinVoiceLogo from "../brand/FinVoiceLogo";
+
 interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: (value: boolean | ((prev: boolean) => boolean)) => void;
@@ -50,19 +52,12 @@ export default function Sidebar({
               className="flex items-center gap-3 overflow-hidden"
               title="FinVoice Guard Home"
             >
-              <div className="w-9 h-9 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center text-primary font-bold shrink-0 shadow-sm">
-                <span className="material-symbols-outlined text-xl">shield</span>
-              </div>
-              {!isCollapsed && (
-                <div className="flex flex-col truncate">
-                  <span className="font-headline-sm text-base font-bold tracking-tight text-white truncate">
-                    FinVoice Guard
-                  </span>
-                  <span className="font-code-sm text-[10px] text-primary uppercase tracking-widest truncate">
-                    ENTERPRISE CONTROL
-                  </span>
-                </div>
-              )}
+              <FinVoiceLogo
+                variant={isCollapsed ? "icon" : "horizontal"}
+                size="sm"
+                animated={true}
+                showSubtitle={!isCollapsed}
+              />
             </Link>
 
             {/* Mobile close button */}

@@ -1,44 +1,88 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import FinVoiceLogo from "@/components/brand/FinVoiceLogo";
+import LiveVoiceIntercomModal from "@/components/voice/LiveVoiceIntercomModal";
 
 export default function LandingPage() {
   const [showWelcome, setShowWelcome] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("Hindi");
+  const [showVoiceIntercom, setShowVoiceIntercom] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("Hindi (हिन्दी)");
+  const [playingLangAudio, setPlayingLangAudio] = useState<string | null>(null);
+  const langAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Auto-launch Welcome/Boot screen on first visit per session
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const alreadyWelcomed = sessionStorage.getItem("finvoice_welcomed");
+      if (!alreadyWelcomed) {
+        setShowWelcome(true);
+      }
+    }
+  }, []);
 
   const languages = [
-    { code: "en", name: "English", sample: "Hello, I am calling regarding a security alert on your account.", translation: "Native dialect, standard RP" },
-    { code: "ar", name: "Arabic (العربية)", sample: "مرحباً، أنا أتصل بخصوص تنبيه أمني عاجل لحسابكم المصرفي.", translation: "Gulf dialect (UAE / KSA)" },
-    { code: "ur", name: "Urdu (اردو)", sample: "السلام علیکم، میں آپ کے بینک کا خودکار حفاظتی وائس اسسٹنٹ ہوں۔", translation: "Standard Urdu with regional nuance" },
-    { code: "hi", name: "Hindi (हिन्दी)", sample: "मेरा कार्ड अभी किसी और ने इस्तेमाल किया है। तुरंत रोकें।", translation: "High confidence intent detection" },
-    { code: "ml", name: "Malayalam (മലയാളം)", sample: "നിങ്ങളുടെ കാർഡിലെ സംശയാസ്പദമായ ഇടപാട് സംബന്ധിച്ചാണ് വിളിക്കുന്നത്.", translation: "Kerala expat banking segment" },
-    { code: "bn", name: "Bengali (বাংলা)", sample: "আপনার অ্যাকাউন্টে একটি জরুরি নিরাপত্তা সতর্কতার জন্য কল করছি।", translation: "Remittance & salary card cohort" },
-    { code: "ta", name: "Tamil (தமிழ்)", sample: "உங்கள் கணக்கில் ஏற்பட்ட சந்தேகத்திற்கிடமான பரிவர்த்தனை குறித்து அழைக்கிறேன்.", translation: "Corporate payroll verified" },
-    { code: "tl", name: "Tagalog", sample: "Tumatawag ako ukol sa security alert sa inyong card.", translation: "Remittance servicing profile" }
+    { code: "en", name: "English", sample: "Hello, I am calling from the security division regarding an unauthorized £920 transaction alert on your card.", translation: "Native dialect, standard RP", intent: "OUTBOUND_FRAUD_ALERT", confidence: "99.4%" },
+    { code: "ar", name: "Arabic (العربية)", sample: "مرحباً، أنا أتصل بخصوص تنبيه أمني عاجل لحسابكم المصرفي. هل قمتم بهذه المعاملة في لندن؟", translation: "Gulf dialect (UAE / KSA)", intent: "FRAUD_VERIFICATION", confidence: "99.1%" },
+    { code: "ur", name: "Urdu (اردو)", sample: "السلام علیکم، میں آپ کے بینک کا خودکار حفاظتی وائس اسسٹنٹ ہوں۔ ہم نے لندن میں 920 پاؤنڈ کا مشکوک ٹرانزیکشن دیکھا ہے۔", translation: "Standard Urdu with regional nuance", intent: "ANOMALY_DETECTION", confidence: "98.9%" },
+    { code: "hi", name: "Hindi (हिन्दी)", sample: "मेरा कार्ड अभी किसी और ने इस्तेमाल किया है। लंदन में £920 का मैसेज आया! तुरंत रोकें।", translation: "High confidence intent detection", intent: "CONFIRM_FRAUD", confidence: "98.4%" },
+    { code: "ml", name: "Malayalam (മലയാളം)", sample: "നിങ്ങളുടെ കാർഡിലെ സംശയാസ്പദമായ ഇടപാട് സംബന്ധിച്ചാണ് വിളിക്കുന്നത്. ദയവായി സുരക്ഷാ സ്ഥിരീകരണം നൽകുക.", translation: "Kerala expat banking segment", intent: "FRAUD_VERIFY", confidence: "97.8%" },
+    { code: "bn", name: "Bengali (বাংলা)", sample: "আপনার অ্যাকাউন্টে একটি জরুরি নিরাপত্তা সতর্কতার জন্য কল করছি। এই লেনদেনটি আপনি করেছেন?", translation: "Remittance & salary card cohort", intent: "FRAUD_VERIFY", confidence: "98.2%" },
+    { code: "ta", name: "Tamil (தமிழ்)", sample: "உங்கள் கணக்கில் ஏற்பட்ட சந்தேகத்திற்கிடமான பரிவர்த்தனை குறித்து அழைக்கிறேன். இதை சரிபார்க்கவும்.", translation: "Corporate payroll verified", intent: "SECURITY_CHECK", confidence: "98.0%" },
+    { code: "tl", name: "Tagalog", sample: "Tumatawag ako ukol sa security alert sa inyong card. Pakikumpirma kung inyo ang £920 transaction.", translation: "Remittance servicing profile", intent: "FRAUD_VERIFY", confidence: "98.5%" }
   ];
+
+  const currentLangObj = languages.find((l) => l.name === selectedLanguage) || languages[3];
+
+  const handlePlayLanguageAudio = async (sampleText: string, langCode: string) => {
+    if (playingLangAudio === langCode) {
+      if (langAudioRef.current) langAudioRef.current.pause();
+      setPlayingLangAudio(null);
+      return;
+    }
+
+    setPlayingLangAudio(langCode);
+    try {
+      const res = await fetch("/api/voice/synthesize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: sampleText,
+          voice_id: "JBFqnCBsd6RMkjVDRZzb",
+        }),
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        if (langAudioRef.current) langAudioRef.current.pause();
+        const audio = new Audio(url);
+        langAudioRef.current = audio;
+        audio.onended = () => setPlayingLangAudio(null);
+        audio.onerror = () => setPlayingLangAudio(null);
+        await audio.play();
+      } else {
+        setPlayingLangAudio(null);
+      }
+    } catch {
+      setPlayingLangAudio(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#07111F] text-[#F5F7FA] selection:bg-[#19D3AE] selection:text-[#00382C]">
       {showWelcome && <WelcomeScreen onComplete={() => setShowWelcome(false)} />}
+      <LiveVoiceIntercomModal isOpen={showVoiceIntercom} onClose={() => setShowVoiceIntercom(false)} />
 
       {/* 1. Global Navigation Bar */}
       <header className="sticky top-0 z-40 w-full bg-[#07111F]/90 backdrop-blur-xl border-b border-[#243746]/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#19D3AE]/15 border border-[#19D3AE]/40 flex items-center justify-center text-[#19D3AE] shadow-[0_0_15px_rgba(25,211,174,0.3)]">
-              <span className="material-symbols-outlined text-2xl">shield</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
-                FINVOICE <span className="text-[#19D3AE]">GUARD</span>
-              </span>
-              <span className="text-[10px] font-mono text-[#91A4B7] tracking-wider uppercase">
-                GOVERNED VOICE AI FOR FINANCIAL WORKFLOWS
-              </span>
-            </div>
-          </div>
+          <Link href="/" className="flex items-center gap-3">
+            <FinVoiceLogo variant="horizontal" size="sm" animated={true} />
+          </Link>
 
           <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-[#91A4B7]">
             <a href="#solutions" className="hover:text-white transition-colors">Solutions</a>
@@ -52,14 +96,23 @@ export default function LandingPage() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             <button
               onClick={() => setShowWelcome(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-[#91A4B7] bg-[#0D1B2A] border border-[#243746] hover:text-[#19D3AE] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-[#91A4B7] bg-[#0D1B2A] border border-[#243746] hover:text-[#19D3AE] transition-colors cursor-pointer"
               title="Run Boot Sequence"
             >
               <span className="material-symbols-outlined text-sm">restart_alt</span>
               <span>Boot Sequence</span>
+            </button>
+
+            <button
+              onClick={() => setShowVoiceIntercom(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-mono font-bold text-[#19D3AE] bg-[#19D3AE]/15 border border-[#19D3AE]/40 hover:bg-[#19D3AE]/25 transition-all cursor-pointer shadow-[0_0_15px_rgba(25,211,174,0.2)]"
+              title="Launch Live Voice Intercom"
+            >
+              <span className="material-symbols-outlined text-sm animate-pulse">mic</span>
+              <span>Live Voice Intercom</span>
             </button>
 
             <Link
@@ -77,7 +130,119 @@ export default function LandingPage() {
               <span className="material-symbols-outlined text-base">arrow_forward</span>
             </Link>
           </div>
+
+          {/* Mobile Menu Hamburger Button */}
+          <div className="flex lg:hidden items-center gap-2">
+            <button
+              onClick={() => setShowVoiceIntercom(true)}
+              className="p-2 rounded-lg bg-[#19D3AE]/15 border border-[#19D3AE]/40 text-[#19D3AE]"
+              title="Live Voice"
+            >
+              <span className="material-symbols-outlined text-lg">mic</span>
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg bg-[#0D1B2A] border border-[#243746] text-white"
+              aria-label="Toggle Menu"
+            >
+              <span className="material-symbols-outlined text-2xl">
+                {mobileMenuOpen ? "close" : "menu"}
+              </span>
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Slide-Down Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-[#07111F] border-b border-[#243746] px-6 py-5 flex flex-col gap-4 animate-fade-in">
+            <nav className="flex flex-col gap-3 text-sm font-medium text-[#91A4B7]">
+              <a
+                href="#solutions"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1 transition-colors"
+              >
+                Solutions
+              </a>
+              <a
+                href="#how-it-works"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1 transition-colors"
+              >
+                How It Works
+              </a>
+              <a
+                href="#governance"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1 transition-colors"
+              >
+                Governance
+              </a>
+              <a
+                href="#multilingual"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1 transition-colors"
+              >
+                Multilingual AI
+              </a>
+              <a
+                href="#security"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1 transition-colors"
+              >
+                Security
+              </a>
+              <a
+                href="#canvas"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-[#19D3AE] py-1 transition-colors flex items-center justify-between"
+              >
+                <span>Architecture</span>
+                <span className="text-[10px] bg-[#19D3AE]/15 text-[#19D3AE] px-2 py-0.5 rounded font-mono">CANVAS</span>
+              </a>
+            </nav>
+
+            <div className="pt-3 border-t border-[#243746] flex flex-col gap-2.5">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setShowVoiceIntercom(true);
+                }}
+                className="w-full py-2.5 bg-[#19D3AE]/15 border border-[#19D3AE]/40 text-[#19D3AE] font-bold text-xs rounded-lg flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-sm">mic</span>
+                <span>Launch Live Voice Intercom</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setShowWelcome(true);
+                }}
+                className="w-full py-2 bg-[#0D1B2A] border border-[#243746] text-[#91A4B7] hover:text-white font-mono text-xs rounded-lg flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-sm">restart_alt</span>
+                <span>Run Boot Sequence</span>
+              </button>
+
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2.5 bg-[#0D1B2A] text-white text-center font-medium text-xs rounded-lg border border-[#243746]"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-2.5 bg-[#19D3AE] text-[#00382C] text-center font-bold text-xs rounded-lg shadow-md"
+                >
+                  Command Center
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* 2. Hero Section */}
@@ -105,9 +270,17 @@ export default function LandingPage() {
               </p>
 
               <div className="flex flex-wrap items-center gap-4 mb-10">
+                <button
+                  onClick={() => setShowVoiceIntercom(true)}
+                  className="px-6 py-3.5 bg-[#19D3AE] hover:bg-[#5BFBD4] text-[#00382C] font-bold text-base rounded-lg shadow-[0_0_30px_rgba(25,211,174,0.4)] transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-xl">mic</span>
+                  <span>Talk with Voice Agent (Live)</span>
+                </button>
+
                 <Link
                   href="/onboarding"
-                  className="px-6 py-3.5 bg-[#19D3AE] hover:bg-[#5BFBD4] text-[#00382C] font-semibold text-base rounded-lg shadow-[0_0_30px_rgba(25,211,174,0.35)] transition-all flex items-center gap-2"
+                  className="px-6 py-3.5 bg-[#0D1B2A] hover:bg-[#11263A] text-white font-medium text-base rounded-lg border border-[#243746] transition-all flex items-center gap-2"
                 >
                   <span>Request Enterprise Demo</span>
                   <span className="material-symbols-outlined text-base">arrow_forward</span>
@@ -115,10 +288,10 @@ export default function LandingPage() {
 
                 <Link
                   href="/dashboard/calls/92831"
-                  className="px-6 py-3.5 bg-[#0D1B2A] hover:bg-[#11263A] text-white font-medium text-base rounded-lg border border-[#243746] transition-all flex items-center gap-2"
+                  className="px-5 py-3.5 bg-[#07111F] hover:bg-[#11263A] text-[#91A4B7] hover:text-white font-medium text-sm rounded-lg border border-[#243746] transition-all flex items-center gap-2"
                 >
                   <span className="material-symbols-outlined text-base text-[#19D3AE]">play_circle</span>
-                  <span>Explore Live Console</span>
+                  <span>Inspect Call #92831</span>
                 </Link>
               </div>
 
@@ -201,13 +374,22 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                <Link
-                  href="/dashboard/calls/92831"
-                  className="mt-5 w-full py-3 bg-[#11263A] hover:bg-[#19D3AE] hover:text-[#00382C] text-[#19D3AE] font-semibold text-xs rounded-lg transition-all flex items-center justify-center gap-2 border border-[#19D3AE]/30"
-                >
-                  <span>Open Tactical Call Console</span>
-                  <span className="material-symbols-outlined text-sm">open_in_new</span>
-                </Link>
+                <div className="mt-5 grid grid-cols-2 gap-2.5">
+                  <button
+                    onClick={() => setShowVoiceIntercom(true)}
+                    className="py-3 px-3 bg-[#19D3AE] hover:bg-[#5BFBD4] text-[#00382C] font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(25,211,174,0.35)] cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">mic</span>
+                    <span>Speak with Agent</span>
+                  </button>
+                  <Link
+                    href="/dashboard/calls/92831"
+                    className="py-3 px-3 bg-[#11263A] hover:bg-[#19D3AE]/20 text-[#19D3AE] font-semibold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 border border-[#19D3AE]/30"
+                  >
+                    <span>Inspect Console</span>
+                    <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -569,41 +751,90 @@ export default function LandingPage() {
           </div>
 
           {/* Interactive Speech Simulation Box */}
-          <div className="max-w-3xl mx-auto bg-[#0D1B2A] border border-[#243746] rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-[#243746] font-mono text-xs">
+          <div className="max-w-3xl mx-auto bg-[#0D1B2A] border border-[#243746] rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#243746] font-mono text-xs">
               <span className="text-[#19D3AE] font-bold flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#19D3AE] animate-ping" />
                 <span>ACOUSTIC SPEECH-TO-INTENT ENGINE</span>
               </span>
-              <span className="text-[#91A4B7]">Model: ElevenLabs Scribe v2 + Eleven v3</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[#91A4B7]">Model:</span>
+                <span className="text-[#5BFBD4] font-bold">ElevenLabs Multilingual v2</span>
+              </div>
             </div>
 
             <div className="my-6 space-y-4">
-              <div className="bg-[#07111F] p-4 rounded-xl border border-[#243746]">
-                <div className="text-[11px] font-mono text-[#91A4B7] uppercase mb-1">Customer Speech Ingress</div>
-                <p className="text-lg font-medium text-white leading-relaxed">
-                  &ldquo;मेरा कार्ड अभी किसी और ने इस्तेमाल किया है। लंदन में £920 का मैसेज आया!&rdquo;
+              {/* Customer Speech Ingress */}
+              <div className="bg-[#07111F] p-4 sm:p-5 rounded-xl border border-[#243746]">
+                <div className="flex items-center justify-between text-[11px] font-mono text-[#91A4B7] uppercase mb-2">
+                  <span>Customer Speech Ingress ({currentLangObj.name})</span>
+                  <span className="text-[#19D3AE]">{currentLangObj.translation}</span>
+                </div>
+                <p className="text-lg sm:text-xl font-medium text-white leading-relaxed">
+                  &ldquo;{currentLangObj.sample}&rdquo;
                 </p>
+
+                {/* Audio Player Action Bar */}
+                <div className="mt-4 pt-3 border-t border-[#243746]/60 flex flex-wrap items-center justify-between gap-3">
+                  <button
+                    onClick={() => handlePlayLanguageAudio(currentLangObj.sample, currentLangObj.code)}
+                    className="px-4 py-2 bg-[#19D3AE] hover:bg-[#5BFBD4] text-[#00382C] font-bold text-xs rounded-lg shadow-[0_0_15px_rgba(25,211,174,0.3)] transition-all flex items-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">
+                      {playingLangAudio === currentLangObj.code ? "pause_circle" : "play_circle"}
+                    </span>
+                    <span>
+                      {playingLangAudio === currentLangObj.code
+                        ? "Streaming Voice..."
+                        : `Listen in ${currentLangObj.name}`}
+                    </span>
+                  </button>
+
+                  {/* Equalizer Waveform Bars when playing */}
+                  {playingLangAudio === currentLangObj.code && (
+                    <div className="flex items-center gap-1 h-5">
+                      {[40, 75, 90, 60, 100, 50, 85, 45, 95, 65].map((h, i) => (
+                        <div
+                          key={i}
+                          className="w-1 bg-[#19D3AE] rounded-full animate-pulse"
+                          style={{
+                            height: `${(i % 3 + 1) * 7}px`,
+                            animationDelay: `${i * 0.1}s`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => setShowVoiceIntercom(true)}
+                    className="text-xs font-mono text-[#19D3AE] hover:underline flex items-center gap-1"
+                  >
+                    <span>Open Live Voice Intercom</span>
+                    <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-center text-[#19D3AE]">
                 <span className="material-symbols-outlined">arrow_downward</span>
               </div>
 
+              {/* AI Telemetry & Intent */}
               <div className="bg-[#07111F] p-4 rounded-xl border border-[#19D3AE]/40 font-mono text-xs">
-                <div className="text-[11px] text-[#19D3AE] uppercase font-bold mb-2">AI Telemetry & Intent Extracted</div>
+                <div className="text-[11px] text-[#19D3AE] uppercase font-bold mb-2">AI Telemetry & Policy Trigger</div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
                   <div>
                     <span className="text-[#91A4B7] block">Language:</span>
-                    <span className="text-white font-bold">Hindi (हिन्दी)</span>
+                    <span className="text-white font-bold">{currentLangObj.name}</span>
                   </div>
                   <div>
-                    <span className="text-[#91A4B7] block">Intent:</span>
-                    <span className="text-[#FF5C5C] font-bold">CONFIRM_FRAUD</span>
+                    <span className="text-[#91A4B7] block">Extracted Intent:</span>
+                    <span className="text-[#FF5C5C] font-bold">{currentLangObj.intent}</span>
                   </div>
                   <div>
-                    <span className="text-[#91A4B7] block">Confidence:</span>
-                    <span className="text-[#28C76F] font-bold">98.4%</span>
+                    <span className="text-[#91A4B7] block">Acoustic Sync:</span>
+                    <span className="text-[#28C76F] font-bold">{currentLangObj.confidence}</span>
                   </div>
                   <div>
                     <span className="text-[#91A4B7] block">Policy Trigger:</span>
@@ -811,6 +1042,15 @@ export default function LandingPage() {
       {/* 13. Footer */}
       <footer className="bg-[#021523] border-t border-[#243746] py-16 text-sm text-[#91A4B7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-10 mb-12 border-b border-[#243746]/60">
+            <Link href="/">
+              <FinVoiceLogo variant="horizontal" size="md" animated={false} />
+            </Link>
+            <p className="max-w-md text-xs font-mono text-[#91A4B7]">
+              Sovereign voice compliance engine enforcing CBUAE REG-604/2026 mandates and sub-200ms ElevenLabs conversational AI across financial services.
+            </p>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div>
               <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-4 font-mono">Solutions</h4>
