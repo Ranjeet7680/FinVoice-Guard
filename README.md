@@ -17,7 +17,21 @@
 
 *Multilingual voice agents for fraud intervention, collections, insurance workflows and everyday servicing — governed by deterministic institutional policies and backed by complete auditability.*
 
-[Live Tactical Console](#tactical-console) • [Box L Technical Architecture](#box-l-technical-architecture) • [Call Flow](#5-step-deterministic-call-flow) • [Guardrail Matrix](#guardrail-architecture-matrix) • [Stage 1 Canvas](#elevenlabs-idea-canvas--stage-1-submission) • [Quickstart](#quickstart--installation)
+[Live Tactical Console](#tactical-console) • [Live Demo Video](#-live-end-to-end-demo-video) • [Box L Technical Architecture](#box-l-technical-architecture) • [Call Flow](#5-step-deterministic-call-flow) • [Guardrail Matrix](#guardrail-architecture-matrix) • [Stage 1 Canvas](#elevenlabs-idea-canvas--stage-1-submission) • [Quickstart](#quickstart--installation)
+
+</div>
+
+---
+
+## 🎥 Live End-to-End Demo Video
+
+<div align="center">
+
+<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7508174543690137602?compact=1" height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+
+<p>
+  <b><a href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7508174543690137602">▶ Watch the Full Live Demonstration on LinkedIn</a></b>
+</p>
 
 </div>
 

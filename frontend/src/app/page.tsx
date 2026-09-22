@@ -84,7 +84,11 @@ export default function LandingPage() {
             <FinVoiceLogo variant="horizontal" size="sm" animated={true} />
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8 text-sm font-medium text-[#91A4B7]">
+          <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-[#91A4B7]">
+            <a href="#demo-video" className="text-[#19D3AE] hover:text-[#5BFBD4] transition-colors flex items-center gap-1 font-bold">
+              <span className="material-symbols-outlined text-base">play_circle</span>
+              <span>Demo Video</span>
+            </a>
             <a href="#solutions" className="hover:text-white transition-colors">Solutions</a>
             <a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a>
             <a href="#governance" className="hover:text-white transition-colors">Governance</a>
@@ -156,6 +160,14 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="lg:hidden bg-[#07111F] border-b border-[#243746] px-6 py-5 flex flex-col gap-4 animate-fade-in">
             <nav className="flex flex-col gap-3 text-sm font-medium text-[#91A4B7]">
+              <a
+                href="#demo-video"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#19D3AE] py-1 transition-colors flex items-center gap-1.5 font-bold"
+              >
+                <span className="material-symbols-outlined text-sm">play_circle</span>
+                <span>Demo Video (Live)</span>
+              </a>
               <a
                 href="#solutions"
                 onClick={() => setMobileMenuOpen(false)}
@@ -431,6 +443,120 @@ export default function LandingPage() {
             <p className="text-sm font-medium text-[#19D3AE]">
               Every conversation. Every decision. Every action. Auditable.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3.5. Live Product Demonstration Video Section */}
+      <section id="demo-video" className="py-20 lg:py-28 bg-[#07111F] border-b border-[#243746]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#19D3AE]/15 border border-[#19D3AE]/40 text-xs font-mono text-[#19D3AE] mb-4 shadow-[0_0_15px_rgba(25,211,174,0.2)]">
+              <span className="w-2 h-2 rounded-full bg-[#19D3AE] animate-pulse" />
+              <span>STAGE 2 LIVE SYSTEM DEMONSTRATION</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              Watch FinVoice Guard in Action
+            </h2>
+            <p className="text-base sm:text-lg text-[#91A4B7] mt-3 max-w-2xl mx-auto leading-relaxed">
+              Recorded end-to-end execution of an urgent cross-border fraud alert — from Kafka anomaly ingress to ElevenLabs multilingual voice synthesis, zero-secrets verification, and simulated banking card freeze.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left: Embedded LinkedIn Demo Video Player */}
+            <div className="lg:col-span-7 flex flex-col items-center">
+              <div className="w-full max-w-[560px] rounded-2xl bg-gradient-to-b from-[#0D1B2A] to-[#07111F] p-4 sm:p-5 border border-[#19D3AE]/40 shadow-[0_0_50px_rgba(25,211,174,0.25)] relative overflow-hidden">
+                {/* Frame Header */}
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#243746] font-mono text-xs">
+                  <div className="flex items-center gap-2 text-[#19D3AE] font-bold">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#FF5C5C] animate-ping" />
+                    <span>FINVOICE GUARD • END-TO-END WALKTHROUGH</span>
+                  </div>
+                  <a
+                    href="https://www.linkedin.com/feed/update/urn:li:ugcPost:7508174543690137602"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#91A4B7] hover:text-[#19D3AE] flex items-center gap-1 transition-colors text-[11px]"
+                  >
+                    <span>View on LinkedIn</span>
+                    <span className="material-symbols-outlined text-xs">open_in_new</span>
+                  </a>
+                </div>
+
+                {/* Video Iframe Container */}
+                <div className="w-full flex justify-center overflow-hidden rounded-xl bg-black/60 shadow-inner">
+                  <iframe
+                    src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7508174543690137602?compact=1"
+                    height="399"
+                    width="504"
+                    frameBorder="0"
+                    allowFullScreen
+                    title="FinVoice Guard Live Demo Walkthrough"
+                    className="w-full max-w-[504px] min-h-[399px] rounded-xl border border-[#243746]"
+                  />
+                </div>
+
+                {/* Video Meta Footer */}
+                <div className="mt-4 pt-3 border-t border-[#243746]/60 flex items-center justify-between text-[11px] font-mono text-[#91A4B7]">
+                  <span className="flex items-center gap-1 text-[#19D3AE]">
+                    <span className="material-symbols-outlined text-sm">verified</span>
+                    <span>100% Genuine ElevenLabs Audio & Policy Verification</span>
+                  </span>
+                  <span>44.1kHz • Stereo</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Technical Highlights & Instant Actions */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              <div className="bg-[#0D1B2A] border border-[#243746] rounded-2xl p-6 shadow-xl space-y-4">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#19D3AE]">verified_user</span>
+                  <span>What Runs End-to-End</span>
+                </h3>
+
+                <div className="space-y-3 font-mono text-xs text-[#BACAC3]">
+                  <div className="p-3.5 rounded-lg bg-[#07111F] border border-[#243746]">
+                    <span className="text-[#FF5C5C] font-bold block mb-1">1. Fraud Event Ingress</span>
+                    <span className="text-[#91A4B7]">Kafka trigger: £920 London swipe vs Dubai geo (96% risk score).</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-lg bg-[#07111F] border border-[#243746]">
+                    <span className="text-[#19D3AE] font-bold block mb-1">2. ElevenLabs Voice Call</span>
+                    <span className="text-[#91A4B7]">Multilingual v2 speech synthesis in customer&apos;s native Urdu language.</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-lg bg-[#07111F] border border-[#243746]">
+                    <span className="text-[#00A2FD] font-bold block mb-1">3. Zero-Secrets Verification</span>
+                    <span className="text-[#91A4B7]">CBUAE REG-604 compliance: zero PIN/CVV collection or exposure.</span>
+                  </div>
+
+                  <div className="p-3.5 rounded-lg bg-[#07111F] border border-[#243746]">
+                    <span className="text-[#5BFBD4] font-bold block mb-1">4. Policy Temporary Freeze</span>
+                    <span className="text-[#91A4B7]">Rule FRAUD-V3.2 permits and executes core banking freeze (FRZ-82191).</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() => setShowVoiceIntercom(true)}
+                    className="w-full py-3 px-4 bg-[#19D3AE] hover:bg-[#5BFBD4] text-[#00382C] font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(25,211,174,0.3)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">mic</span>
+                    <span>Test Voice Live Now</span>
+                  </button>
+
+                  <Link
+                    href="/dashboard/calls/92831"
+                    className="w-full py-3 px-4 bg-[#11263A] hover:bg-[#19D3AE]/20 text-[#19D3AE] font-semibold text-xs rounded-xl border border-[#19D3AE]/40 transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Inspect Incident #92831</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
