@@ -49,3 +49,6 @@ wheels/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Wiki Workspace
+scratch_wiki/

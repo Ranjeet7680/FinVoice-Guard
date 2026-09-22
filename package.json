@@ -1,0 +1,23 @@
+{
+  "name": "finvoice-guard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FinVoice Guard - Governed Voice AI for Financial Services (ElevenLabs Hackathon Track 1)",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
+    "lint": "npm --prefix frontend run lint"
+  },
+  "keywords": [
+    "elevenlabs",
+    "voice-ai",
+    "banking",
+    "fraud-prevention",
+    "cbuae",
+    "nextjs",
+    "fastapi"
+  ],
+  "author": "Ranjeet",
+  "license": "Apache-2.0"
+}
